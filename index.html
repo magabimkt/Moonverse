@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Descansar sem culpa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE: acolhedora e simples, com respaldo científico discreto.
+   IDEA: cada slide é uma pausa — pouco texto, uma ideia, a referência no cantinho.
+   PICTURE: pequenas cenas desenhadas (xícara, cérebro, bateria, balança, escudo, bicicleta).
+   COLOUR and TYPE: fundo ameixa; título em lavanda ou coral marca quem apresenta; Nunito arredondada.
+   LAYOUT: texto à esquerda, cena à direita; empilha no celular. */
+:root{color-scheme:dark;--bg:#1f1033;--bg2:#2b1746;--ink:#f6f1ff;--soft:#cbbfe0;--lav:#c9b6ff;--cor:#ff9a8b;--mint:#9be7c4;--line:rgba(255,255,255,.14)}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:clamp(17px,1.6vw,24px)/1.5 Nunito,system-ui,sans-serif;overflow:hidden}
+.deck{position:fixed;inset:0}
+.slide{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:clamp(20px,4vw,64px);align-items:center;grid-template-rows:minmax(0,1fr) auto;padding:clamp(40px,6vh,80px) max(6vw,20px) 78px;opacity:0;visibility:hidden;transform:translateX(30px);transition:opacity .45s,transform .45s,visibility .45s;background:radial-gradient(120% 90% at 100% 0%,var(--bg2),var(--bg) 60%);overflow-y:auto}
+.slide.on{opacity:1;visibility:visible;transform:none}
+.g{--c:var(--lav)}.j{--c:var(--cor)}
+h1,h2{font-weight:900;line-height:1.05;text-wrap:balance;margin:0 0 .5em}
+h1{font-size:clamp(42px,6.4vw,96px)}
+h2{font-size:clamp(32px,4.2vw,62px);color:var(--c)}
+p{margin:0 0 .8em;max-width:34em;color:var(--soft)}
+p.big{font-size:1.18em;color:var(--ink)}
+ul.pts{list-style:none;margin:0;padding:0;display:grid;gap:.6em;max-width:36em}
+ul.pts li{padding:.55em .9em;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--soft)}
+ul.pts b{color:var(--c)}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7em;max-width:40em}
+.card{padding:.8em 1em;border-radius:18px;background:rgba(255,255,255,.07);border:1px solid var(--line)}
+.card b{display:block;color:var(--c)}
+.card span{color:var(--soft);font-size:.82em;line-height:1.4;display:block}
+.card sup,li sup,p sup{color:var(--c);font-weight:800;font-size:.65em}
+.stat{display:flex;gap:1.2em;flex-wrap:wrap;margin:.2em 0 .8em}
+.stat div{flex:1 1 8em}
+.stat strong{display:block;font-size:clamp(44px,5.8vw,84px);font-weight:900;line-height:1;color:var(--c)}
+.stat span{color:var(--soft);font-size:.85em}
+.help{margin-top:.9em;padding:.7em 1em;border-radius:16px;border:2px dashed var(--mint);color:var(--ink);font-size:.85em;max-width:36em}
+.ref{grid-column:1/-1;align-self:end;font-size:12px;line-height:1.4;color:#8f82a8;padding-top:8px;border-top:1px solid var(--line)}
+.ref ol{margin:0;padding-left:1.3em}
+.art{display:grid;place-items:center}
+.art svg{width:100%;max-width:500px;height:auto;max-height:58vh}
+.listen{margin:.2em 0 .9em;padding-left:1.4em;display:grid;gap:.35em;max-width:34em;color:var(--soft)}
+.listen b{color:var(--ink)}
+.after{margin-top:1em;font-size:.9em}
+.after b{color:var(--cor)}
+.yt{display:inline-flex;align-items:center;gap:.4em;min-height:48px;padding:.4em 1.3em;border-radius:99px;background:var(--cor);color:#1f1033;font-weight:900;text-decoration:none;margin-top:.4em}
+.yt:hover,.yt:focus-visible{background:#ffb8ad;outline:2px solid var(--ink)}
+.bar{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:12px;padding:10px max(3vw,12px);background:linear-gradient(transparent,rgba(15,6,28,.92) 40%);z-index:5;font-size:14px}
+.prog{flex:1;height:6px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--lav),var(--cor));transition:width .4s}
+.bar button{font:700 14px Nunito,sans-serif;color:var(--ink);background:rgba(255,255,255,.1);border:1px solid var(--line);border-radius:12px;min-height:44px;min-width:44px;padding:0 12px;cursor:pointer}
+.bar button:focus-visible{outline:2px solid var(--lav)}
+.count,.clock{color:var(--soft);white-space:nowrap;font-variant-numeric:tabular-nums}
+.clock.late{color:var(--cor)}
+.notes{position:fixed;left:max(3vw,12px);right:max(3vw,12px);bottom:68px;max-height:42vh;overflow:auto;background:#120820;border:1px solid var(--lav);border-radius:18px;padding:14px 18px;font-size:16px;line-height:1.5;color:var(--ink);z-index:6;display:none}
+.notes.show{display:block}
+.notes ul{margin:0;padding-left:1.1em}
+aside{display:none}
+@keyframes steam{0%{opacity:0;transform:translateY(8px)}50%{opacity:.8}100%{opacity:0;transform:translateY(-14px)}}
+.steam{animation:steam 3s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.pulse{animation:pulse 2.4s infinite}
+@media(prefers-reduced-motion:reduce){.slide{transition:none}.steam,.pulse{animation:none}}
+@media(max-width:760px){
+ .slide{grid-template-columns:minmax(0,1fr);align-content:start;gap:14px}
+ .art{order:-1}.art svg{max-height:26vh}
+ .cards{grid-template-columns:minmax(0,1fr)}
+ .bar .hide-sm{display:none}
+}
+</style>
+</head>
+<body>
+<main class="deck" id="deck">
+
+<!-- 1 ABERTURA -->
+<section class="slide">
+  <div>
+    <h1 style="font-size:clamp(40px,5.4vw,80px)">Descansar <span style="color:var(--cor)">sem culpa</span></h1>
+    <p class="big">Antes de começar, uma música: <b>NORMAL</b>, do BTS. Enquanto escuta, repare em três coisas:</p>
+    <ol class="listen">
+      <li>Uma rotina tão intensa e cheia de pressão que passou a ser chamada de <b>"normal"</b>.</li>
+      <li>A vontade de ter <b>um minuto só para se desligar</b>.</li>
+      <li>Uma palavra que vai aparecer de novo hoje: <b>dopamina</b>.</li>
+    </ol>
+    <a class="yt" href="https://youtu.be/GEk4jHwfFTA?is=fhuIXMSUwoa-zfL9" target="_blank" rel="noopener">▶ Ouvir NORMAL</a>
+    <p class="after">Depois do vídeo: <b>o que, na sua rotina, virou "normal" — e não deveria ser?</b></p>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 320" aria-hidden="true">
+    <ellipse cx="200" cy="292" rx="150" ry="14" fill="#140a24"/>
+    <path d="M120 140 h150 v90 a45 45 0 0 1 -45 45 h-60 a45 45 0 0 1 -45 -45z" fill="#c9b6ff"/>
+    <path d="M270 160 a34 34 0 0 1 0 68" fill="none" stroke="#c9b6ff" stroke-width="16"/>
+    <path d="M120 140 h150 v22 h-150z" fill="#e3d8ff"/>
+    <g fill="none" stroke="#f6f1ff" stroke-width="7" stroke-linecap="round"><path class="steam" d="M160 120 q-12 -22 0 -44"/><path class="steam" style="animation-delay:1s" d="M195 120 q-12 -22 0 -44"/><path class="steam" style="animation-delay:2s" d="M230 120 q-12 -22 0 -44"/></g>
+    <path d="M200 228 l-18 -18 a12 12 0 0 1 18 -14 a12 12 0 0 1 18 14z" fill="#ff9a8b"/>
+  </svg></div>
+  <aside><ul><li>Antes do vídeo: leiam os três pontos em voz alta, para o público escutar com atenção.</li><li>A música fala de como a pressão e o cansaço foram virando rotina até serem chamados de "normal", e da vontade de poder se desligar um pouco.</li><li>Depois do vídeo, a ponte: "Muitas de nós também normalizamos o cansaço e sentimos culpa quando paramos. Hoje vamos ver, com a ciência, por que descansar e fazer o que a gente gosta não é defeito."</li><li>A dopamina citada na música volta no slide 2, quando falarmos da química do bem-estar.</li><li>Teclas: → / espaço avança, ← volta, N abre as notas, F tela cheia.</li></ul></aside>
+</section>
+
+<!-- 2 QUÍMICA -->
+<section class="slide g">
+  <div>
+    <h2>Por que o que a gente gosta faz bem</h2>
+    <div class="cards">
+      <div class="card"><b>Música que você ama</b><span>libera dopamina no sistema de recompensa do cérebro — na expectativa e no auge da emoção<sup>1</sup></span></div>
+      <div class="card"><b>Música reduz estresse</b><span>diminui frequência cardíaca, pressão e hormônios do estresse, e a sensação de tensão<sup>2</sup></span></div>
+      <div class="card"><b>Drama que emociona</b><span>assistir a uma história comovente aumenta a tolerância à dor (indício de liberação de endorfinas) e a sensação de vínculo<sup>3</sup></span></div>
+      <div class="card"><b>Lazer prazeroso</b><span>quem faz mais atividades prazerosas tem mais emoções positivas, menos sintomas de depressão, e pressão e cortisol mais baixos<sup>4</sup></span></div>
+    </div>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 320" aria-hidden="true">
+    <path d="M120 230 c-60 -10 -80 -80 -40 -120 c10 -50 70 -70 110 -50 c40 -30 110 -10 120 40 c50 20 50 100 0 120 c-10 30 -60 40 -90 20 c-30 20 -80 10 -100 -10z" fill="#c9b6ff"/>
+    <g fill="none" stroke="#1f1033" stroke-width="5" stroke-linecap="round" opacity=".55"><path d="M150 110 q30 30 0 60"/><path d="M210 90 q-20 40 10 70"/><path d="M260 120 q-30 30 0 70"/></g>
+    <g class="pulse"><circle cx="110" cy="70" r="10" fill="#ff9a8b"/><circle cx="320" cy="80" r="8" fill="#9be7c4"/><circle cx="340" cy="250" r="12" fill="#ffd36e"/><circle cx="70" cy="260" r="9" fill="#ff9a8b"/></g>
+  </svg></div>
+  <div class="ref"><ol><li>Salimpoor et al. Anatomically distinct dopamine release during anticipation and experience of peak emotion to music. <i>Nature Neuroscience</i>, 14(2), 2011.</li><li>de Witte et al. Effects of music interventions on stress-related outcomes: a systematic review and two meta-analyses. <i>Health Psychology Review</i>, 14(2), 2020.</li><li>Dunbar et al. Emotional arousal when watching drama increases pain threshold and social bonding. <i>Royal Society Open Science</i>, 3(9), 2016.</li><li>Pressman et al. Association of enjoyable leisure activities with psychological and physical well-being. <i>Psychosomatic Medicine</i>, 71(7), 2009.</li></ol></div>
+  <aside><ul><li>Dopamina é mais sobre "querer" e expectativa — por isso o arrepio antes do refrão e o gancho no fim do episódio funcionam tanto.</li><li>A meta-análise reuniu 104 estudos controlados: a música reduziu o estresse tanto no corpo quanto na sensação.</li><li>No estudo de Oxford, quem viu um filme emocionante aguentou mais dor e se sentiu mais unido ao grupo — chorar junto aproxima.</li><li>Mensagem: esse bem-estar é biológico, não é "frescura".</li></ul></aside>
+</section>
+
+<!-- 3 DADOS -->
+<section class="slide j">
+  <div>
+    <h2>A saúde mental pede atenção</h2>
+    <div class="stat">
+      <div><strong>9,3%</strong><span>dos brasileiros têm transtorno de ansiedade — a maior taxa do mundo<sup>1</sup></span></div>
+      <div><strong>5,8%</strong><span>vivem com depressão<sup>1</sup></span></div>
+      <div><strong>+25%</strong><span>de ansiedade e depressão no mundo no 1º ano da pandemia<sup>2</sup></span></div>
+    </div>
+    <p>As mulheres estão entre as mais afetadas.<sup>1,2</sup></p>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 320" aria-hidden="true">
+    <path d="M200 40 c80 0 130 50 130 115 c0 50 -40 95 -100 105 l0 30 h-60 l0 -30 c-60 -10 -100 -55 -100 -105 c0 -65 50 -115 130 -115z" fill="#2b1746" stroke="#ff9a8b" stroke-width="4"/>
+    <g fill="none" stroke="#ff9a8b" stroke-width="6" stroke-linecap="round"><path class="pulse" d="M120 150 c20 -40 60 -40 80 0 s60 40 80 0"/><path class="pulse" style="animation-delay:.8s" d="M130 190 c20 -30 50 -30 70 0 s50 30 70 0"/></g>
+  </svg></div>
+  <div class="ref"><ol><li>WHO. <i>Depression and other common mental disorders: global health estimates.</i> Genebra: OMS, 2017 (WHO/MSD/MER/2017.2; dados de 2015).</li><li>WHO. <i>Mental health and COVID-19: early evidence of the pandemic's impact.</i> Scientific brief, 2 mar. 2022 (WHO/2019-nCoV/Sci_Brief/Mental_health/2022.1).</li></ol></div>
+  <aside><ul><li>Ansiedade: a mente vive no futuro ("e se…?"). Depressão: peso, falta de energia, perda do prazer.</li><li>Sentir ansiedade às vezes é humano; vira transtorno quando é intensa, frequente e atrapalha a rotina.</li><li>Ponte: por isso cuidar do bem-estar no dia a dia não é luxo.</li></ul></aside>
+</section>
+
+<!-- 4 RECUPERAÇÃO -->
+<section class="slide j">
+  <div>
+    <h2>O descanso que recupera</h2>
+    <p class="big">Quando estamos estressadas, a mente fica remoendo problemas. Um episódio ou uma música funcionam como um intervalo para a cabeça.</p>
+    <ul class="pts">
+      <li><b>Desligar:</b> parar de pensar nas obrigações por um tempo<sup>1</sup></li>
+      <li><b>Relaxar:</b> baixar a ativação do corpo e da mente<sup>1</sup></li>
+      <li><b>Sentir, não engolir:</b> reprimir emoções está ligado a menos bem-estar — chorar num dorama é deixar sair<sup>2</sup></li>
+    </ul>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 320" aria-hidden="true">
+    <rect x="70" y="90" width="240" height="140" rx="22" fill="none" stroke="#f6f1ff" stroke-width="10"/>
+    <rect x="312" y="135" width="22" height="50" rx="6" fill="#f6f1ff"/>
+    <rect x="90" y="110" width="200" height="100" rx="12" fill="#9be7c4"/>
+    <path d="M200 120 l-30 45 h28 l-10 40 l40 -55 h-28 l10 -30z" fill="#1f1033"/>
+  </svg></div>
+  <div class="ref"><ol><li>Sonnentag, S.; Fritz, C. The Recovery Experience Questionnaire. <i>Journal of Occupational Health Psychology</i>, 12(3), 2007.</li><li>Gross, J. J.; John, O. P. Individual differences in two emotion regulation processes. <i>Journal of Personality and Social Psychology</i>, 85(2), 2003.</li></ol></div>
+  <aside><ul><li>Sonnentag e Fritz descrevem quatro experiências que recuperam: desligar-se mentalmente, relaxar, aprender algo novo e ter controle sobre o próprio tempo.</li><li>Remoer problemas sem parar tem nome: ruminação. A pausa prazerosa interrompe esse ciclo.</li><li>Gross e John: quem costuma suprimir emoções relata menos emoções positivas e menos bem-estar.</li></ul></aside>
+</section>
+
+<!-- 5 SEM CULPA -->
+<section class="slide g">
+  <div>
+    <h2>Descansar não é defeito</h2>
+    <p class="big">A culpa rouba o descanso: quem assiste a algo se sentindo culpada se recupera menos — justamente quem mais precisava.<sup>1</sup></p>
+    <div class="cards">
+      <div class="card"><b>Prazer que cuida</b><span>eu escolho, aproveito e volto para a vida com mais energia</span></div>
+      <div class="card" style="--c:var(--cor)"><b>Prazer que foge</b><span>maratonar séries com frequência está ligado a sono pior, mais cansaço e mais insônia<sup>2</sup></span></div>
+    </div>
+    <p style="margin-top:.9em">Pergunta-chave: <b style="color:var(--ink)">depois disso, eu me sinto melhor ou pior?</b></p>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 320" aria-hidden="true">
+    <path d="M200 50 v220" stroke="#f6f1ff" stroke-width="6"/>
+    <path d="M90 110 h220" stroke="#f6f1ff" stroke-width="6" stroke-linecap="round"/>
+    <path d="M90 110 l-40 80 h80z" fill="#c9b6ff"/><path d="M310 110 l-40 80 h80z" fill="#ff9a8b"/>
+    <ellipse cx="200" cy="275" rx="70" ry="12" fill="#c9b6ff"/>
+    <circle cx="200" cy="50" r="12" fill="#f6f1ff"/>
+  </svg></div>
+  <div class="ref"><ol><li>Reinecke, L.; Hartmann, T.; Eden, A. The guilty couch potato: the role of ego depletion in reducing recovery through media use. <i>Journal of Communication</i>, 64(4), 2014.</li><li>Exelmans, L.; Van den Bulck, J. Binge viewing, sleep, and the role of pre-sleep arousal. <i>Journal of Clinical Sleep Medicine</i>, 13(8), 2017.</li></ol></div>
+  <aside><ul><li>Reinecke e colegas (471 participantes): pessoas cansadas que viam TV ou jogavam se sentindo culpadas, como se fosse fracasso, tiveram menos recuperação e vitalidade.</li><li>Exelmans (423 jovens de 18 a 25 anos): a ligação com o sono ruim se explica pela mente agitada antes de dormir. Ver TV de forma comum não teve essa associação.</li><li>Mensagem central: não é preguiça, é necessidade. O cuidado está em perceber a função que o hobby está cumprindo.</li></ul></aside>
+</section>
+
+<!-- 6 DIETA PARA A MENTE -->
+<section class="slide j">
+  <div>
+    <h2>Uma dieta para a mente</h2>
+    <p class="big">Assim como escolhemos o que comemos, podemos escolher o que consumimos emocionalmente.</p>
+    <ul class="pts">
+      <li><b>Comparar cansa:</b> ver perfis "perfeitos" nas redes está ligado a uma autoestima mais baixa<sup>1</sup></li>
+      <li><b>Silenciar</b> notificações e perfis que fazem mal</li>
+      <li><b>Não carregar</b> problemas que não são nossos</li>
+    </ul>
+    <div class="help"><b>Hobby cuida, mas não substitui tratamento.</b> Se a tristeza ou a ansiedade duram semanas e atrapalham a rotina, procure ajuda: UBS, CAPS, psicólogo. <b>CVV 188</b>, ligação gratuita, 24h.</div>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 320" aria-hidden="true">
+    <path d="M200 40 l120 40 v80 c0 70 -55 110 -120 135 c-65 -25 -120 -65 -120 -135 v-80z" fill="#ff9a8b"/>
+    <path d="M200 70 l90 30 v60 c0 52 -40 82 -90 102z" fill="#ffb8ad"/>
+    <path d="M200 220 l-34 -34 a22 22 0 0 1 34 -28 a22 22 0 0 1 34 28z" fill="#1f1033"/>
+  </svg></div>
+  <div class="ref"><ol><li>Vogel, E. A. et al. Social comparison, social media, and self-esteem. <i>Psychology of Popular Media Culture</i>, 3(4), 2014.</li></ol></div>
+  <aside><ul><li>Na rede, comparamos nossos bastidores com o palco editado dos outros (comparação "para cima").</li><li>Cultivar boas emoções não é ignorar os problemas: é construir uma reserva de força para os dias difíceis.</li><li>Leiam o aviso de ajuda com calma — pedir ajuda é cuidado, não fraqueza.</li></ul></aside>
+</section>
+
+<!-- 7 NAMJOONING -->
+<section class="slide g">
+  <div>
+    <h2>Namjooning: desacelerar de propósito</h2>
+    <p class="big">Termo criado pelos fãs para o jeito do RM recarregar: natureza, bicicleta, museus, livros.</p>
+    <ul class="pts">
+      <li><b>Virou disciplina:</b> em 2026, Stanford lançou um seminário sobre bem-estar inspirado nesses hábitos, estudados com base em pesquisas<sup>1</sup></li>
+      <li><b>A ciência confirma:</b> 90 minutos caminhando na natureza reduziram a ruminação e a atividade de uma área do cérebro ligada a ela<sup>2</sup></li>
+    </ul>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 320" aria-hidden="true">
+    <circle cx="300" cy="80" r="34" fill="#ffd36e"/>
+    <path d="M0 260 q100 -60 200 -20 t200 -10 v90 h-400z" fill="#2f5c4a"/>
+    <path d="M70 230 v-50" stroke="#6b4a2b" stroke-width="10"/><circle cx="70" cy="165" r="34" fill="#9be7c4"/>
+    <g fill="none" stroke="#c9b6ff" stroke-width="7" stroke-linecap="round"><circle cx="170" cy="230" r="30"/><circle cx="270" cy="230" r="30"/><path d="M170 230 l35 -45 h45 l20 45 M205 185 l25 45 h40 M240 170 h22"/></g>
+  </svg></div>
+  <div class="ref"><ol><li>Stanford University. PSYC 65N: <i>Namjooning, and other well-being inspiration from BTS</i>. Introductory Seminar, outono de 2026.</li><li>Bratman, G. N. et al. Nature experience reduces rumination and subgenual prefrontal cortex activation. <i>PNAS</i>, 112(28), 2015.</li></ol></div>
+  <aside><ul><li>Fala-chave: "Quando você sai um pouco da tela, caminha sem pressa ou presta atenção em algo bonito, desliga o piloto automático e deixa a mente respirar."</li><li>O estudo de Bratman foi feito com 38 adultos, também em Stanford: a área que diminuiu a atividade foi o córtex pré-frontal subgenual.</li><li>Convite final: escolher uma coisa simples para fazer hoje ou amanhã, sem culpa.</li></ul></aside>
+</section>
+
+<!-- 8 OBRIGADA -->
+<section class="slide">
+  <div>
+    <h1>Obrigada<span style="color:var(--cor)">!</span></h1>
+    <p class="big">Escolha uma coisa que te faz bem para fazer hoje ou amanhã — sem culpa, sem pressa.</p>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 320" aria-hidden="true">
+    <path d="M200 280 l-110 -110 a62 62 0 0 1 110 -88 a62 62 0 0 1 110 88z" fill="#c9b6ff"/>
+    <path d="M200 280 l-110 -110 a62 62 0 0 1 110 -88z" fill="#ff9a8b" opacity=".85"/>
+    <g fill="#f6f1ff" class="pulse"><circle cx="60" cy="60" r="6"/><circle cx="350" cy="50" r="5"/><circle cx="360" cy="260" r="7"/><circle cx="40" cy="250" r="5"/></g>
+  </svg></div>
+  <aside><ul><li>Agradeçam a troca e abram para perguntas.</li></ul></aside>
+</section>
+
+</main>
+
+<div class="notes" id="notes"></div>
+<nav class="bar">
+  <button id="prev" aria-label="Slide anterior">←</button>
+  <span class="count" id="count">1 / 8</span>
+  <div class="prog"><i id="prog"></i></div>
+  <span class="clock hide-sm" id="clock" title="Tempo decorrido (meta: 40 min)">00:00 / 40:00</span>
+  <button id="timerBtn" class="hide-sm">▶ Tempo</button>
+  <button id="notesBtn">Notas</button>
+  <button id="fsBtn" class="hide-sm">Tela cheia</button>
+  <button id="next" aria-label="Próximo slide">→</button>
+</nav>
+
+<script>
+{
+const slides=[...document.querySelectorAll('.slide')];
+const notes=document.getElementById('notes');
+const count=document.getElementById('count');
+const prog=document.getElementById('prog');
+let i=0;
+const fromHash=()=>{const m=location.hash.match(/^#slide-(\d+)$/);return m?Math.min(Math.max(+m[1]-1,0),slides.length-1):0};
+const show=n=>{
+  i=Math.min(Math.max(n,0),slides.length-1);
+  slides.forEach((s,k)=>s.classList.toggle('on',k===i));
+  count.textContent=(i+1)+' / '+slides.length;
+  prog.style.width=((i+1)/slides.length*100)+'%';
+  const a=slides[i].querySelector('aside');
+  notes.innerHTML=a?a.innerHTML:'';
+  if(location.hash!=='#slide-'+(i+1))history.replaceState(null,'','#slide-'+(i+1));
+};
+const next=()=>show(i+1),prev=()=>show(i-1);
+document.getElementById('next').addEventListener('click',next);
+document.getElementById('prev').addEventListener('click',prev);
+document.getElementById('notesBtn').addEventListener('click',()=>notes.classList.toggle('show'));
+const fs=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}catch(e){}};
+document.getElementById('fsBtn').addEventListener('click',fs);
+document.addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();next()}
+  else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();prev()}
+  else if(e.key==='n'||e.key==='N')notes.classList.toggle('show');
+  else if(e.key==='f'||e.key==='F')fs();
+});
+let sx=null;
+document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>60)dx<0?next():prev();sx=null});
+window.addEventListener('hashchange',()=>show(fromHash()));
+
+const clock=document.getElementById('clock'),tb=document.getElementById('timerBtn');
+let t0=null,acc=0,tick=null;
+const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(Math.floor(s%60)).padStart(2,'0');
+const paint=()=>{const s=acc+(t0?(Date.now()-t0)/1000:0);clock.textContent=fmt(s)+' / 40:00';clock.classList.toggle('late',s>2400)};
+tb.addEventListener('click',()=>{
+  if(t0){acc+=(Date.now()-t0)/1000;t0=null;clearInterval(tick);tb.textContent='▶ Tempo'}
+  else{t0=Date.now();tick=setInterval(paint,1000);tb.textContent='❚❚ Pausar'}
+  paint();
+});
+show(fromHash());
+}
+</script>
+</body>
+</html>
